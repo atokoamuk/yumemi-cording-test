@@ -8,6 +8,7 @@ import PrefectureCheckbox from './components/PrefecturesCheckbox'
 import Skeleton from '@/components/Skelton'
 import { usePrefectures } from './hooks/usePrefectures'
 import { usePopulation } from './hooks/usePoplations'
+import LoadingOverlay from '@/components/LoadingOverlay'
 
 export default function Home() {
   const { prefectures } = usePrefectures()
@@ -20,7 +21,7 @@ export default function Home() {
   )
   const [selectedLabel, setSelectedLabel] = useState<PopulationLabel>('総人口')
 
-  const { populations } = usePopulation(selectedPrefcode, selectedLabel)
+  const { populations, isLoading } = usePopulation(selectedPrefcode, selectedLabel)
 
   function handleSelectedPrefcodeChange(prefcode: number) {
     setSelectedPrefcode((prev) =>
@@ -47,9 +48,12 @@ export default function Home() {
         )}
       </div>
       <LabelTab selectedLabel={selectedLabel} onChange={(s) => setSelectedLabel(s)} />
-      <div className="w-full bg-white flex-1 p-8">
+      <div className="w-full bg-white flex-1 p-8 relative">
         {selectedPrefectures.length > 0 ? (
-          <PopulationGraph data={populations} prefectures={selectedPrefectures} />
+          <>
+            <LoadingOverlay show={isLoading} />
+            <PopulationGraph data={populations} prefectures={selectedPrefectures} />
+          </>
         ) : (
           <div className="flex justify-center items-center h-full">
             <h1 className="text-gray-500 text-2xl">都道府県を選択してください</h1>
