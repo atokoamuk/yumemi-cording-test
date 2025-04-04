@@ -1,5 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend, CartesianGrid, Tooltip } from 'recharts'
 import { Prefecture } from '../type'
+import { Payload } from 'recharts/types/component/DefaultLegendContent'
+import { useState } from 'react'
 
 type Props = {
   data: { year: number; [key: string]: number }[]
@@ -9,12 +11,26 @@ type Props = {
 export default function PopulationGraph(props: Props) {
   const { data, prefectures } = props
 
+  const [targetDatakey, setTargetDatakey] = useState<string | undefined>()
+
+  function handleLegendMouseEnter(data: Payload) {
+    const { dataKey } = data
+    if (!dataKey) return
+    setTargetDatakey(String(dataKey))
+  }
+
+  function handleLegendMouseOut() {
+    setTargetDatakey(undefined)
+  }
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data}>
         <XAxis dataKey="year" />
         <YAxis />
         <Legend
+          onMouseEnter={handleLegendMouseEnter}
+          onMouseOut={handleLegendMouseOut}
           align="right"
           layout="vertical"
           verticalAlign="top"
@@ -24,11 +40,12 @@ export default function PopulationGraph(props: Props) {
         <Tooltip />
         {prefectures.map((prefecture) => (
           <Line
+            strokeWidth={targetDatakey === `${prefecture.prefCode}` ? 4 : 1}
             key={`line-${prefecture.prefCode}`}
             name={`${prefecture.prefName}`}
             type="monotone"
             dataKey={`${prefecture.prefCode}`}
-            stroke={`hsl(${(prefecture.prefCode * 100) % 360}, 70%, 50%)`}
+            stroke={`hsl(${(prefecture.prefCode * 360) / 47}, 75%, 60%)`}
           />
         ))}
       </LineChart>
