@@ -6,5 +6,6 @@
     {
       "file": ".copilot-commit-message-instructions.md"
     }
-  ]
+  ],
+  "eslint.useFlatConfig": true
 }
