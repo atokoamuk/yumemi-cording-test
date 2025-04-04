@@ -1,6 +1,7 @@
 // usePopulationData.ts
 import { useQueries } from '@tanstack/react-query'
 import { useMemo } from 'react'
+
 import { getPopulation } from '../actions'
 import { PopulationLabel } from '../type'
 

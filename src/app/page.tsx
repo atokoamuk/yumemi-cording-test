@@ -1,14 +1,17 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import PopulationGraph from './components/PoplationGraph'
-import { PopulationLabel } from './type'
-import LabelTab from './components/LabelTab'
-import PrefectureCheckbox from './components/PrefecturesCheckbox'
-import Skeleton from '@/components/Skelton'
-import { usePrefectures } from './hooks/usePrefectures'
-import { usePopulation } from './hooks/usePoplations'
+
 import LoadingOverlay from '@/components/LoadingOverlay'
+import Skeleton from '@/components/Skelton'
+
+import LabelTab from './components/LabelTab'
+import PopulationGraph from './components/PoplationGraph'
+import PrefectureCheckbox from './components/PrefecturesCheckbox'
+import { usePopulation } from './hooks/usePoplations'
+import { usePrefectures } from './hooks/usePrefectures'
+import { PopulationLabel } from './type'
+
 
 export default function Home() {
   const { prefectures } = usePrefectures()

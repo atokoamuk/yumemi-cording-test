@@ -1,7 +1,8 @@
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend, CartesianGrid, Tooltip } from 'recharts'
-import { Prefecture } from '../type'
-import { Payload } from 'recharts/types/component/DefaultLegendContent'
 import { useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend, CartesianGrid, Tooltip } from 'recharts'
+import { Payload } from 'recharts/types/component/DefaultLegendContent'
+
+import { Prefecture } from '../type'
 
 type Props = {
   data: { year: number; [key: string]: number }[]
