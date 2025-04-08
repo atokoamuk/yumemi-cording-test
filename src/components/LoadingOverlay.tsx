@@ -1,7 +1,7 @@
 type Props = {
   show: boolean
 }
-export default function LoadingOverlay(props: Props) {
+function LoadingOverlay(props: Props) {
   const { show } = props
 
   return (
@@ -14,3 +14,5 @@ export default function LoadingOverlay(props: Props) {
     </>
   )
 }
+
+export default LoadingOverlay
