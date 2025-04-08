@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { Prefecture } from '../type'
 
 type Props = {
@@ -6,12 +8,12 @@ type Props = {
   onChange: (prefcodes: number) => void
 }
 
-export default function PrefectureCheckbox(props: Props) {
+function PrefectureCheckbox(props: Props) {
   const { prefectures, selectedPrefcodes, onChange } = props
 
   function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const value = parseInt(event.target.value, 10)
-    onChange(value)
+    const prefCode = Number(event.target.value)
+    onChange(prefCode)
   }
 
   return (
@@ -30,3 +32,5 @@ export default function PrefectureCheckbox(props: Props) {
     </>
   )
 }
+
+export default memo(PrefectureCheckbox)
