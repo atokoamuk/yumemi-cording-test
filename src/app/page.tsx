@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import LoadingOverlay from '@/components/LoadingOverlay'
+import SimpleButton from '@/components/SimpleButton'
 import Skeleton from '@/components/Skelton'
 
 import LabelTab from './components/LabelTab'
@@ -35,6 +36,10 @@ export default function Root() {
     [setSelectedLabel],
   )
 
+  const handleClearSelectedPrefcode = useCallback(() => {
+    setSelectedPrefcode([])
+  }, [setSelectedPrefcode])
+
   const selectedPrefectures = useMemo(
     () => prefectures.filter((prefecture) => selectedPrefcode.includes(prefecture.prefCode)),
     [prefectures, selectedPrefcode],
@@ -44,6 +49,7 @@ export default function Root() {
     <div className="flex flex-col h-svh px-16 py-8 gap-4">
       <div className="flex items-center gap-4">
         <h1 className="font-bold">都道府県</h1>
+        <SimpleButton onClick={handleClearSelectedPrefcode}>選択状態をクリア</SimpleButton>
       </div>
 
       <div className="h-[30%] overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
