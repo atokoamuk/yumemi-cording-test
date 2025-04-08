@@ -44,6 +44,9 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    ignores: ['**/matchers.d.ts'],
+  },
 ]
 
 export default eslintConfig
