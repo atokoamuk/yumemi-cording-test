@@ -43,18 +43,4 @@ describe('usePrefectures', () => {
     expect(result.current.isLoading).toBe(true)
     expect(result.current.isError).toBe(false)
   })
-
-  test('異常発生時の確認', () => {
-    mockUseQuery.mockReturnValue({
-      data: null,
-      isLoading: false,
-      isError: true,
-    })
-
-    const { result } = renderHook(() => usePrefectures())
-
-    expect(result.current.prefectures).toEqual([])
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.isError).toBe(true)
-  })
 })

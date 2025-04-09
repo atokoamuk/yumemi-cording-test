@@ -25,8 +25,7 @@ describe('Root', () => {
     const { getByText, getAllByTestId } = render(<Root />)
 
     expect(getByText('都道府県')).toBeInTheDocument()
-    expect(getByText('都道府県を選択してください')).toBeInTheDocument()
-
     expect(await getAllByTestId(/^prefecture-skeleton-\d+$/).length).toBe(47)
+    expect(getByText('都道府県を選択してください')).toBeInTheDocument()
   })
 })

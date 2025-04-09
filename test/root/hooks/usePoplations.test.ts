@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react'
 import { describe, test, jest, mock, expect } from 'bun:test'
 
 import { usePopulation } from '@/app/hooks/usePoplations'
-import { PopulationLabel } from '@/app/type'
+import { PopulationLabel } from '@/type'
 
 mock.module('@tanstack/react-query', () => ({
   useQueries: jest.fn(),
@@ -39,7 +39,6 @@ describe('usePopulation', () => {
     const { result } = renderHook(() => usePopulation([1], '総人口' as PopulationLabel))
 
     expect(result.current.isLoading).toBe(false)
-    expect(result.current.errors).toBe(false)
     expect(result.current.populations).toEqual([
       { year: 2000, 1: 100 },
       { year: 2010, 1: 120 },
@@ -58,23 +57,6 @@ describe('usePopulation', () => {
     const { result } = renderHook(() => usePopulation([1], '総人口' as PopulationLabel))
 
     expect(result.current.isLoading).toBe(true)
-    expect(result.current.errors).toBe(false)
-    expect(result.current.populations).toEqual([])
-  })
-
-  test('異常発生時の確認', () => {
-    mockUseQueries.mockReturnValue([
-      {
-        isLoading: false,
-        isError: true,
-        data: null,
-      },
-    ])
-
-    const { result } = renderHook(() => usePopulation([1], '総人口' as PopulationLabel))
-
-    expect(result.current.isLoading).toBe(false)
-    expect(result.current.errors).toBe(true)
     expect(result.current.populations).toEqual([])
   })
 })

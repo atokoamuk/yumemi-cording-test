@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { expect } from 'bun:test'
-import { test, describe, mock } from 'bun:test'
+import { test, describe, mock, jest } from 'bun:test'
 import recharts from 'recharts'
 
 import PopulationGraph from '@/app/components/PoplationGraph'
@@ -16,10 +16,16 @@ mock.module('recharts', async () => {
   }
 })
 
-const data = [
-  { year: 2000, '01': 100, '02': 200 },
-  { year: 2001, '01': 150, '02': 250 },
-]
+mock.module('@/app/hooks/usePoplations', () => ({
+  usePopulation: jest.fn(() => ({
+    data: [
+      { year: 2000, value: 1000 },
+      { year: 2005, value: 1200 },
+      { year: 2010, value: 1400 },
+    ],
+    isLoading: false,
+  })),
+}))
 
 const prefectures = [
   { prefCode: 1, prefName: '東京' },
@@ -27,16 +33,10 @@ const prefectures = [
 ]
 
 describe('PopulationGraph', () => {
-  test('データに応じた表示', async () => {
-    const { getByText } = render(<PopulationGraph data={data} prefectures={prefectures} />)
+  test('データに応じたグラフ表示の確認', async () => {
+    const { getByText } = render(<PopulationGraph prefectures={prefectures} label="総人口" />)
 
-    expect(getByText('人口推移')).toBeInTheDocument()
-
-    data.forEach((d) => {
-      expect(
-        getByText((content, element) => (!!element ? element.tagName === 'tspan' && content === `${d.year}` : false)),
-      ).toBeInTheDocument()
-    })
+    expect(getByText('総人口推移')).toBeInTheDocument()
 
     prefectures.forEach((d) => {
       expect(getByText(d.prefName)).toBeInTheDocument()

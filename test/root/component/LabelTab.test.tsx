@@ -6,7 +6,7 @@ import LabelTab from '@/app/components/LabelTab'
 const labels = ['総人口', '年少人口', '生産年齢人口', '老年人口']
 
 describe('LabelTab', () => {
-  test('選択ラベルの表示', () => {
+  test('選択ラベルの表示確認', () => {
     const selectedLabel = '総人口'
     const onChange = jest.fn()
     const { getByText } = render(<LabelTab selectedLabel={selectedLabel} onChange={onChange} />)
@@ -22,7 +22,7 @@ describe('LabelTab', () => {
     })
   })
 
-  test('ラベル押下', () => {
+  test('ラベル押下時の出力確認', () => {
     const selectedLabel = '総人口'
     const onChange = jest.fn()
 
