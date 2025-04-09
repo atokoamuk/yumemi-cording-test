@@ -2,15 +2,23 @@ import { memo, useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend, CartesianGrid, Tooltip, Label } from 'recharts'
 import { Payload } from 'recharts/types/component/DefaultLegendContent'
 
-import { Prefecture } from '../type'
+import LoadingOverlay from '@/components/LoadingOverlay'
+import { PopulationLabel, Prefecture } from '@/type'
+
+import { usePopulation } from '../hooks/usePoplations'
 
 type Props = {
-  data: { year: number; [key: string]: number }[]
   prefectures: Prefecture[]
+  label: PopulationLabel
 }
 
-function PopulationGraph(props: Props) {
-  const { data, prefectures } = props
+const PopulationGraph = (props: Props) => {
+  const { prefectures, label } = props
+
+  const { populations, isLoading } = usePopulation(
+    prefectures.map((p) => p.prefCode),
+    label,
+  )
 
   const [targetDatakey, setTargetDatakey] = useState<string | undefined>()
 
@@ -20,28 +28,30 @@ function PopulationGraph(props: Props) {
     setTargetDatakey(String(dataKey))
   }
 
-  function handleLegendMouseOut() {
+  function handleLegendMouseLeave() {
     setTargetDatakey(undefined)
   }
 
   return (
     <div className="w-full flex flex-col h-full items-center gap-2 p-2">
-      <h3>人口推移</h3>
+      <LoadingOverlay show={isLoading} />
+      <h3>{label}推移</h3>
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 32, right: 32, left: 24 }}>
-          <XAxis dataKey="year" fontSize={12}>
+        <LineChart data={populations} margin={{ top: 32 }}>
+          <XAxis dataKey="year" fontSize={'0.75em'}>
             <Label value="年度" position="right" offset={16} />
           </XAxis>
-          <YAxis fontSize={12}>
+          <YAxis fontSize={'0.75em'}>
             <Label value="人口数" position="top" offset={16} />
           </YAxis>
           <Legend
             onMouseEnter={handleLegendMouseEnter}
-            onMouseOut={handleLegendMouseOut}
+            onMouseLeave={handleLegendMouseLeave}
             align="right"
             layout="vertical"
-            verticalAlign="top"
-            wrapperStyle={{ paddingLeft: '4rem', overflowY: 'auto' }}
+            verticalAlign="middle"
+            wrapperStyle={{ paddingLeft: '2em', overflowY: 'auto', height: 'calc(100% - 4em)' }}
+            fontSize={'0.75em'}
           />
           <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
           <Tooltip />
