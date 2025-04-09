@@ -13,7 +13,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     <div className="flex flex-col justify-center items-center h-svh px-16 py-8 gap-2">
       <h1>エラーが発生しました</h1>
       <h3>画面を更新して現象が解決するかお試しください</h3>
-      <h4 className="text-gray-500">エラーが解決しない場合はお時間をおいてサイドアクセスしてください</h4>
+      <h4 className="text-gray-500">エラーが解決しない場合はお時間をおいて再度アクセスしてください</h4>
       <SimpleButton onClick={() => reset()}>更新</SimpleButton>
     </div>
   )
