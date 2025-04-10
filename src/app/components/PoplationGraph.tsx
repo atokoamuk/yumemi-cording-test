@@ -5,7 +5,7 @@ import { Payload } from 'recharts/types/component/DefaultLegendContent'
 import LoadingOverlay from '@/components/LoadingOverlay'
 import { PopulationLabel, Prefecture } from '@/type'
 
-import { usePopulation } from '../hooks/usePoplations'
+import { usePopulations } from '../hooks/usePoplations'
 
 type Props = {
   prefectures: Prefecture[]
@@ -15,7 +15,7 @@ type Props = {
 const PopulationGraph = (props: Props) => {
   const { prefectures, label } = props
 
-  const { populations, isLoading } = usePopulation(
+  const { populations, isLoading } = usePopulations(
     prefectures.map((p) => p.prefCode),
     label,
   )
