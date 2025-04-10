@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, expect, test } from 'bun:test'
 
 import { getPopulation } from '@/actions/poplation'
 
@@ -11,6 +11,6 @@ describe('poplation-action', () => {
     expect(data.result).toBeDefined()
   })
   test('異常：存在しない都道府県コードの人口情報を取得する', async () => {
-    expect(getPopulation(999)).rejects.toThrow('404')
+    await expect(getPopulation(999)).rejects.toThrow('404')
   })
 })

@@ -1,18 +1,21 @@
-import { useQueries } from '@tanstack/react-query'
 import { renderHook } from '@testing-library/react'
-import { describe, test, jest, mock, expect } from 'bun:test'
+import { describe, test, jest, expect } from 'bun:test'
+import { afterEach } from 'bun:test'
 
-import { usePopulation } from '@/app/hooks/usePoplations'
+import { usePopulations } from '@/app/hooks/usePoplations'
 import { PopulationLabel } from '@/type'
 
-mock.module('@tanstack/react-query', () => ({
-  useQueries: jest.fn(),
-}))
+import { mockModule, MockResult } from '../../mock-module'
 
 describe('usePopulation', () => {
-  const mockUseQueries = useQueries as jest.Mock
+  let mocks: MockResult[] = []
 
-  test('正常処理の確認', () => {
+  afterEach(() => {
+    mocks.forEach((mockResult) => mockResult.clear())
+    mocks = []
+  })
+
+  test('正常処理の確認', async () => {
     const mockData = [
       {
         data: {
@@ -34,9 +37,13 @@ describe('usePopulation', () => {
       },
     ]
 
-    mockUseQueries.mockReturnValue(mockData)
+    mocks.push(
+      await mockModule('@tanstack/react-query', () => ({
+        useQueries: jest.fn(() => mockData),
+      })),
+    )
 
-    const { result } = renderHook(() => usePopulation([1], '総人口' as PopulationLabel))
+    const { result } = renderHook(() => usePopulations([1], '総人口' as PopulationLabel))
 
     expect(result.current.isLoading).toBe(false)
     expect(result.current.populations).toEqual([
@@ -45,16 +52,22 @@ describe('usePopulation', () => {
     ])
   })
 
-  test('ローディングのクエリが存在する場合の確認', () => {
-    mockUseQueries.mockReturnValue([
+  test('ローディングのクエリが存在する場合の確認', async () => {
+    const mockData = [
       {
         isLoading: true,
         isError: false,
         data: null,
       },
-    ])
+    ]
 
-    const { result } = renderHook(() => usePopulation([1], '総人口' as PopulationLabel))
+    mocks.push(
+      await mockModule('@tanstack/react-query', () => ({
+        useQueries: jest.fn(() => mockData),
+      })),
+    )
+
+    const { result } = renderHook(() => usePopulations([1], '総人口' as PopulationLabel))
 
     expect(result.current.isLoading).toBe(true)
     expect(result.current.populations).toEqual([])

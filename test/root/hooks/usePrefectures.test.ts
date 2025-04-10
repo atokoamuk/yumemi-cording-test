@@ -1,41 +1,56 @@
-import { useQuery } from '@tanstack/react-query'
 import { renderHook } from '@testing-library/react'
-import { describe, test, jest, mock, expect } from 'bun:test'
+import { describe, test, jest, expect } from 'bun:test'
+import { afterEach } from 'bun:test'
 
 import { usePrefectures } from '@/app/hooks/usePrefectures'
 
-mock.module('@tanstack/react-query', () => ({
-  useQuery: jest.fn(),
-}))
+import { mockModule, MockResult } from '../../mock-module'
+
+const prefefctures = [
+  { prefCode: 1, prefName: '北海道' },
+  { prefCode: 2, prefName: '青森県' },
+]
 
 describe('usePrefectures', () => {
-  const mockUseQuery = useQuery as jest.Mock
+  let mocks: MockResult[] = []
 
-  test('正常処理の確認', () => {
-    const mockData = [
-      { prefCode: 1, prefName: '北海道' },
-      { prefCode: 2, prefName: '青森県' },
-    ]
+  afterEach(() => {
+    mocks.forEach((mockResult) => mockResult.clear())
+    mocks = []
+  })
 
-    mockUseQuery.mockReturnValue({
-      data: mockData,
+  test('都道府県情報の出力', async () => {
+    const mockData = {
+      data: prefefctures,
       isLoading: false,
       isError: false,
-    })
+    }
+
+    mocks.push(
+      await mockModule('@tanstack/react-query', () => ({
+        useQuery: jest.fn(() => mockData),
+      })),
+    )
 
     const { result } = renderHook(() => usePrefectures())
 
-    expect(result.current.prefectures).toEqual(mockData)
+    expect(result.current.prefectures).toEqual(prefefctures)
     expect(result.current.isLoading).toBe(false)
     expect(result.current.isError).toBe(false)
   })
 
-  test('データ取得中の確認', () => {
-    mockUseQuery.mockReturnValue({
+  test('データフェッチ中の状態の出力', async () => {
+    const mockData = {
       data: null,
       isLoading: true,
       isError: false,
-    })
+    }
+
+    mocks.push(
+      await mockModule('@tanstack/react-query', () => ({
+        useQuery: jest.fn(() => mockData),
+      })),
+    )
 
     const { result } = renderHook(() => usePrefectures())
 
