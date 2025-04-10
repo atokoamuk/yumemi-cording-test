@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
-    "test": "test",
-    "test:e2e": "playwright test",
     "start": "next start",
-    "lint": "next lint"
+    "build": "next build",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "test",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "next": "15.2.4",
