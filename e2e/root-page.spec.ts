@@ -33,10 +33,26 @@ test('選択した都道府県の状態をクリアする', async ({ page }) => 
   for (const prefecture of SELECT_PREFECTURES) {
     await page.getByRole('checkbox', { name: prefecture }).click()
   }
-
-  await expect(page.getByRole('heading', { name: '人口推移' })).toBeVisible()
-
   await page.getByRole('button', { name: '選択状態をクリア' }).click()
 
   await expect(page.getByRole('heading', { name: '都道府県を選択してください' })).toBeVisible()
+})
+
+test('グラフのラベルを変更する', async ({ page }) => {
+  await page.goto('http://localhost:3000/')
+
+  const labels = page.locator('label')
+  const labelElements = await labels.all()
+
+  for (const label of labelElements) {
+    await label.waitFor({ state: 'visible' })
+  }
+
+  for (const prefecture of SELECT_PREFECTURES) {
+    await page.getByRole('checkbox', { name: prefecture }).click()
+  }
+
+  await page.getByRole('button', { name: '年少人口' }).click()
+
+  await expect(page.getByRole('heading', { name: '年少人口推移' })).toBeVisible()
 })

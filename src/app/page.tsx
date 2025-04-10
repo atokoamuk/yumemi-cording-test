@@ -1,62 +1,57 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import LoadingOverlay from '@/components/LoadingOverlay'
-import Skeleton from '@/components/Skelton'
+import SimpleButton from '@/components/SimpleButton'
+
+import { PopulationLabel, Prefecture } from '../type'
 
 import LabelTab from './components/LabelTab'
 import PopulationGraph from './components/PoplationGraph'
 import PrefectureCheckbox from './components/PrefecturesCheckbox'
-import { usePopulation } from './hooks/usePoplations'
-import { usePrefectures } from './hooks/usePrefectures'
-import { PopulationLabel } from './type'
 
-
-export default function Home() {
-  const { prefectures } = usePrefectures()
-
-  const [selectedPrefcode, setSelectedPrefcode] = useState<number[]>([])
-
-  const selectedPrefectures = useMemo(
-    () => prefectures.filter((prefecture) => selectedPrefcode.includes(prefecture.prefCode)),
-    [prefectures, selectedPrefcode],
-  )
+export default function Root() {
+  const [selectedPrefectures, setSelectedPrefectures] = useState<Prefecture[]>([])
   const [selectedLabel, setSelectedLabel] = useState<PopulationLabel>('総人口')
 
-  const { populations, isLoading } = usePopulation(selectedPrefcode, selectedLabel)
+  const handleChangePrefCheck = useCallback(
+    (prefecture: Prefecture) => {
+      setSelectedPrefectures((prev) =>
+        prev.some((p) => p.prefCode === prefecture.prefCode)
+          ? prev.filter((p) => p.prefCode !== prefecture.prefCode)
+          : [...prev, prefecture],
+      )
+    },
+    [setSelectedPrefectures],
+  )
 
-  function handleSelectedPrefcodeChange(prefcode: number) {
-    setSelectedPrefcode((prev) =>
-      prev.includes(prefcode) ? prev.filter((code) => code !== prefcode) : [...prev, prefcode],
-    )
-  }
+  const handleClearSelectedPrefcode = useCallback(() => {
+    setSelectedPrefectures([])
+  }, [setSelectedPrefectures])
+
+  const handleLabelChange = useCallback(
+    (label: PopulationLabel) => {
+      setSelectedLabel(label)
+    },
+    [setSelectedLabel],
+  )
 
   return (
-    <div className="flex flex-col h-svh p-24 gap-8">
-      <h1 className="text-3xl font-bold">都道府県</h1>
-      <div className="h-[30%] overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {prefectures.length > 0 ? (
-          <PrefectureCheckbox
-            prefectures={prefectures}
-            selectedPrefcodes={selectedPrefcode}
-            onChange={handleSelectedPrefcodeChange}
-          />
-        ) : (
-          [...Array(47)].map((_, index) => (
-            <div key={`prefecture-skeleton-${index}`} className="h-[1em]">
-              <Skeleton key={index} />
-            </div>
-          ))
-        )}
+    <div className="flex flex-col h-svh p-8 gap-4">
+      <div className="md:flex items-center gap-4">
+        <h1 className="font-bold">都道府県</h1>
+        <SimpleButton className="text-sm" onClick={handleClearSelectedPrefcode}>
+          選択状態をクリア
+        </SimpleButton>
       </div>
-      <LabelTab selectedLabel={selectedLabel} onChange={(s) => setSelectedLabel(s)} />
-      <div className="w-full bg-white flex-1 p-8 relative">
+      <div className="max-h-[30%] min-h-8 overflow-y-auto">
+        <PrefectureCheckbox selectedPrefecture={selectedPrefectures} onChange={handleChangePrefCheck} />
+      </div>
+      <LabelTab selectedLabel={selectedLabel} onChange={handleLabelChange} />
+
+      <div className="w-full min-h-[400px] bg-white flex-1 relative">
         {selectedPrefectures.length > 0 ? (
-          <>
-            <LoadingOverlay show={isLoading} />
-            <PopulationGraph data={populations} prefectures={selectedPrefectures} />
-          </>
+          <PopulationGraph prefectures={selectedPrefectures} label={selectedLabel} />
         ) : (
           <div className="flex justify-center items-center h-full">
             <h1 className="text-gray-500 text-2xl">都道府県を選択してください</h1>

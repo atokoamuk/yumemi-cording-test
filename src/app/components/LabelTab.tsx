@@ -1,6 +1,8 @@
 'use client'
 
-import { PopulationLabel } from '../type'
+import { memo } from 'react'
+
+import { PopulationLabel } from '@/type'
 
 const labels = ['総人口', '年少人口', '生産年齢人口', '老年人口'] as const
 
@@ -9,7 +11,7 @@ type Props = {
   onChange: (label: PopulationLabel) => void
 }
 
-export default function LabelTab(props: Props) {
+function LabelTab(props: Props) {
   const { selectedLabel, onChange } = props
 
   function handleLabelChange(label: PopulationLabel) {
@@ -17,7 +19,7 @@ export default function LabelTab(props: Props) {
   }
 
   return (
-    <div className="flex space-x-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {labels.map((label) => (
         <button
           key={label}
@@ -30,3 +32,5 @@ export default function LabelTab(props: Props) {
     </div>
   )
 }
+
+export default memo(LabelTab)

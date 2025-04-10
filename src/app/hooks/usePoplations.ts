@@ -1,15 +1,15 @@
-// usePopulationData.ts
 import { useQueries } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-import { getPopulation } from '../actions'
-import { PopulationLabel } from '../type'
+import { getPopulation } from '@/actions/poplation'
+import { PopulationLabel } from '@/type'
 
-export function usePopulation(prefcodes: number[], label: PopulationLabel) {
+export function usePopulations(prefcodes: number[], label: PopulationLabel) {
   const populationQueries = useQueries({
     queries: prefcodes.map((prefCode) => ({
       queryKey: ['population', prefCode],
       queryFn: () => getPopulation(prefCode),
+      throwOnError: true,
     })),
   })
 
@@ -34,5 +34,5 @@ export function usePopulation(prefcodes: number[], label: PopulationLabel) {
 
   const isLoading = populationQueries.some((query) => query.isLoading)
 
-  return { isLoading, populations }
+  return { populations, isLoading }
 }
